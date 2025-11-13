@@ -83,12 +83,22 @@ def t_TOK_ERROR(t):
 lexer = lex.lex()
 
 # --- Lógica de Ejecución ---
-if _name_ == '_main_':
-    if not sys.stdin.isatty():
-        data = sys.stdin.read()
+if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) > 1:
+        file_path = sys.argv[1]
+        
+        try:
+            with open(file_path, 'r') as f:
+                data = f.read()
+        except FileNotFoundError:
+            sys.stderr.write(f"Error: Archivo de entrada '{file_path}' no encontrado.\n")
+            sys.exit(1)
+
         lexer.input(data)
         
-        # Formato de salida para el log
+        # Formato de salida para el log (stdout)
         print("--- Análisis Léxico de C# (PLY) ---")
         print("{:<20} {:<20} {:<10} {:<10}".format("Tipo", "Lexema", "Línea", "Columna"))
         print("-" * 60)
@@ -103,4 +113,5 @@ if _name_ == '_main_':
                 columna
             ))
     else:
-        sys.stderr.write("Uso: python lexer_csharp.py < archivo_fuente.cs > archivo_log.txt\n")
+        sys.stderr.write("Uso: python lexer_cs.py <archivo_fuente.cs> > archivo_log.txt\n")
+        sys.stderr.write("Uso alternativo (más robusto): python lexer_cs.py archivo_fuente.cs > archivo_log.txt\n")
