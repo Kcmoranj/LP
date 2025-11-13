@@ -1,0 +1,19 @@
+--- Análisis Léxico de C# (PLY) ---
+Tipo                 Lexema               Línea      Columna   
+------------------------------------------------------------
+KEYWORD_TYPE_INT     int                  8          1         
+IDENTIFIER           variableUno          8          5         
+INT_LITERAL          1                    8          19        
+DELIMITER            ;                    8          20        
+KEYWORD_TYPE_DOUBLE  double               10         1         
+IDENTIFIER           variableDos          10         8         
+FLOAT_LITERAL        2.5                  10         24        
+DELIMITER            ;                    10         28        
+KEYWORD_TYPE_STRING  string               12         1         
+IDENTIFIER           texto                12         8         
+STRING_LITERAL       "Fin."               12         16        
+DELIMITER            ;                    12         22        
+KEYWORD_TYPE_INT     int                  14         1         
+IDENTIFIER           i                    14         5         
+INT_LITERAL          0                    14         9         
+DELIMITER            ;                    14         10        
