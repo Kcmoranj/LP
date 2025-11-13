@@ -25,3 +25,82 @@ tokens = list(tokens) + list(reserved.values())
 def find_column(input, t):
     line_start = input.rfind('\n', 0, t.lexpos) + 1
     return (t.lexpos - line_start) + 1
+
+# ==========================================================
+# Aporte: Daniel Vilema
+# Identificadores
+def t_IDENTIFIER(t):
+    r'[A-Za-z_][A-Za-z0-9_]*'
+    t.type = reserved.get(t.value, 'IDENTIFIER')
+    return t
+
+# Literales
+t_INT_LITERAL = r'\d+'
+t_FLOAT_LITERAL = r'\d+\.\d+'
+t_STRING_LITERAL = r'\"([^\\\n]|(\\.))*?\"'
+t_CHAR_LITERAL = r'\'([^\\\n]|(\\.))?\''
+
+# ==========================================================
+# Aporte: Kiara Morán
+# Operadores
+t_OPERATOR = r'\+\+|--|==|!=|<=|>=|&&|\|\|[+*/%=!~?-]'
+
+# Delimitadores
+t_DELIMITER = r'[\{\}\[\]\(\)\,\;\.]'
+
+# ==========================================================
+# Aporte: Juan Romero
+# Comentarios
+def t_COMMENT_SINGLE(t):
+    r'//.*'
+    pass
+
+def t_COMMENT_MULTI(t):
+    r'/\(.|\n)?\*/'
+    t.lexer.lineno += t.value.count('\n')
+    pass
+
+# Manejo de saltos de línea
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+# Caracteres a ignorar
+t_ignore = ' \t'
+
+# ==========================================================
+
+
+# --- Manejo de Errores Léxicos ---
+def t_TOK_ERROR(t):
+    r'.'
+    print(f"TOK_ERROR: Carácter ilegal '{t.value[0]}' en línea {t.lineno}, columna {find_column(t.lexer.lexdata, t)}", file=sys.stderr)
+    t.lexer.skip(1)
+    t.value = t.value[0]
+    return t
+
+# --- Construcción del Analizador Léxico ---
+lexer = lex.lex()
+
+# --- Lógica de Ejecución ---
+if _name_ == '_main_':
+    if not sys.stdin.isatty():
+        data = sys.stdin.read()
+        lexer.input(data)
+        
+        # Formato de salida para el log
+        print("--- Análisis Léxico de C# (PLY) ---")
+        print("{:<20} {:<20} {:<10} {:<10}".format("Tipo", "Lexema", "Línea", "Columna"))
+        print("-" * 60)
+        
+        # Imprime los tokens y errores
+        for tok in lexer:
+            columna = find_column(data, tok)
+            print("{:<20} {:<20} {:<10} {:<10}".format(
+                tok.type, 
+                tok.value, 
+                tok.lineno, 
+                columna
+            ))
+    else:
+        sys.stderr.write("Uso: python lexer_csharp.py < archivo_fuente.cs > archivo_log.txt\n")
