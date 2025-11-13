@@ -43,8 +43,7 @@ t_CHAR_LITERAL = r'\'([^\\\n]|(\\.))?\''
 # ==========================================================
 # Aporte: Kiara Morán
 # Operadores
-t_OPERATOR = r'\+\+|--|==|!=|<=|>=|&&|\|\|[+*/%=!~?-]'
-
+t_OPERATOR = r'\+\+|--|==|!=|<=|>=|&&|\|\||[+\-*/%=!<>~?]'
 # Delimitadores
 t_DELIMITER = r'[\{\}\[\]\(\)\,\;\.]'
 
@@ -56,7 +55,7 @@ def t_COMMENT_SINGLE(t):
     pass
 
 def t_COMMENT_MULTI(t):
-    r'/\(.|\n)?\*/'
+    r'/\* (?:.|\n) *?\ */'
     t.lexer.lineno += t.value.count('\n')
     pass
 
@@ -72,12 +71,9 @@ t_ignore = ' \t'
 
 
 # --- Manejo de Errores Léxicos ---
-def t_TOK_ERROR(t):
-    r'.'
-    print(f"TOK_ERROR: Carácter ilegal '{t.value[0]}' en línea {t.lineno}, columna {find_column(t.lexer.lexdata, t)}", file=sys.stderr)
+def t_error(t):
+    sys.stderr.write(f"ERROR LÉXICO: Carácter ilegal '{t.value[0]}' en línea {t.lineno}, columna {find_column(t.lexer.lexdata, t)}\n")
     t.lexer.skip(1)
-    t.value = t.value[0]
-    return t
 
 # --- Construcción del Analizador Léxico ---
 lexer = lex.lex()
