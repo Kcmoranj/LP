@@ -1,0 +1,11 @@
+ERROR SINTÁCTICO: Token inesperado ')' (tipo: RPAREN) en línea 17
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 19
+ERROR SINTÁCTICO: Token inesperado ')' (tipo: RPAREN) en línea 22
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 25
+ERROR SINTÁCTICO: Token inesperado ')' (tipo: RPAREN) en línea 28
+ERROR SINTÁCTICO: Token inesperado ')' (tipo: RPAREN) en línea 29
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 31
+ERROR SINTÁCTICO: Token inesperado ')' (tipo: RPAREN) en línea 35
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 37
+ERROR SINTÁCTICO: Token inesperado ')' (tipo: RPAREN) en línea 127
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 129
