@@ -1,0 +1,10 @@
+WARNING: Token 'KEYWORD_BREAK' defined, but not used
+WARNING: Token 'KEYWORD_CASE' defined, but not used
+WARNING: Token 'KEYWORD_CONST' defined, but not used
+WARNING: Token 'KEYWORD_CONTINUE' defined, but not used
+WARNING: Token 'KEYWORD_DEFAULT' defined, but not used
+WARNING: Token 'KEYWORD_SWITCH' defined, but not used
+WARNING: Token 'KEYWORD_VAR' defined, but not used
+WARNING: There are 7 unused tokens
+Generating LALR tables
+WARNING: 1 shift/reduce conflict
