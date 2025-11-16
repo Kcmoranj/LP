@@ -1,0 +1,13 @@
+WARNING: Token 'KEYWORD_BREAK' defined, but not used
+WARNING: Token 'KEYWORD_CASE' defined, but not used
+WARNING: Token 'KEYWORD_CONST' defined, but not used
+WARNING: Token 'KEYWORD_CONTINUE' defined, but not used
+WARNING: Token 'KEYWORD_DEFAULT' defined, but not used
+WARNING: Token 'KEYWORD_SWITCH' defined, but not used
+WARNING: Token 'KEYWORD_VAR' defined, but not used
+WARNING: /workspaces/LP/parser_cs.py:194: Rule 'procedure_def' defined, but not used
+WARNING: There are 7 unused tokens
+WARNING: There is 1 unused rule
+WARNING: Symbol 'procedure_def' is unreachable
+Generating LALR tables
+WARNING: 1 shift/reduce conflict

@@ -1,0 +1,18 @@
+WARNING: Token 'KEYWORD_BREAK' defined, but not used
+WARNING: Token 'KEYWORD_CASE' defined, but not used
+WARNING: Token 'KEYWORD_CONST' defined, but not used
+WARNING: Token 'KEYWORD_CONTINUE' defined, but not used
+WARNING: Token 'KEYWORD_DEFAULT' defined, but not used
+WARNING: Token 'KEYWORD_SWITCH' defined, but not used
+WARNING: Token 'KEYWORD_VAR' defined, but not used
+WARNING: /workspaces/LP/parser_cs.py:188: Rule 'procedure_def' defined, but not used
+WARNING: There are 7 unused tokens
+WARNING: There is 1 unused rule
+WARNING: Symbol 'procedure_def' is unreachable
+Generating LALR tables
+WARNING: 1 shift/reduce conflict
+ERROR SINTÁCTICO: Token inesperado 'return' (tipo: KEYWORD_RETURN) en línea 41
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 42
+ERROR SINTÁCTICO: Token inesperado 'return' (tipo: KEYWORD_RETURN) en línea 45
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 46
+ERROR SINTÁCTICO: Token inesperado 'return' (tipo: KEYWORD_RETURN) en línea 49
