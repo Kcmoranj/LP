@@ -1,0 +1,6 @@
+ERROR SINTÁCTICO: Token inesperado 'MostrarMensaje' (tipo: IDENTIFIER) en línea 52
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 54
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 60
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 66
+ERROR SINTÁCTICO: Token inesperado 'ProcesarDatos' (tipo: IDENTIFIER) en línea 79
+ERROR SINTÁCTICO: Token inesperado '}' (tipo: RBRACE) en línea 83
