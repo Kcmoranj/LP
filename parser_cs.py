@@ -193,6 +193,57 @@ def p_method_def(p):
     """method_def : type IDENTIFIER LPAREN params RPAREN block"""
     p[0] = ("method", p[1], p[2], p[4], p[6])
 
+
+###############################################################
+# SECCIÓN DE JUAN ROMERO
+# Responsabilidad:
+# - Estructura de control: FOR
+# - Estructura de datos: Clases
+# - Tipo de función: Métodos de clase
+###############################################################
+
+# FOR
+def p_for_statement(p):
+    """for_statement : KEYWORD_FOR LPAREN for_init expression SEMICOLON for_update RPAREN block"""
+    p[0] = ("for", p[3], p[4], p[6], p[8])
+
+def p_for_init(p):
+    """for_init : IDENTIFIER OPERATOR expression SEMICOLON"""
+    if p[2] == '=':
+        p[0] = ("assign", p[1], p[3])
+
+def p_for_update(p):
+    """for_update : IDENTIFIER OPERATOR expression"""
+    if p[2] == '=':
+        p[0] = ("assign", p[1], p[3])
+
+# CLASES
+def p_class_def(p):
+    """class_def : KEYWORD_CLASS IDENTIFIER LBRACE class_body RBRACE
+                 | KEYWORD_CLASS IDENTIFIER LBRACE RBRACE"""
+    if len(p) == 6:
+        p[0] = ("class", p[2], p[4])
+    else:
+        p[0] = ("class", p[2], [])
+
+def p_class_body(p):
+    """class_body : class_body class_member
+                  | class_member"""
+    if len(p) == 3:
+        p[0] = p[1] + [p[2]]
+    else:
+        p[0] = [p[1]]
+
+def p_class_member(p):
+    """class_member : declaration
+                    | method_def"""
+    p[0] = p[1]
+
+# MÉTODOS DE CLASE
+def p_method_def(p):
+    """method_def : type IDENTIFIER LPAREN params RPAREN block"""
+    p[0] = ("method", p[1], p[2], p[4], p[6])
+
 ###############################################################
 # EMPTY
 ###############################################################
