@@ -10,6 +10,7 @@ import ply.yacc as yacc
 from lexer_cs import tokens, lexer
 import sys
 import datetime
+from semantico_comun import analizar_programa
 
 ###############################################################
 # PRECEDENCIA DE OPERADORES
