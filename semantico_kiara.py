@@ -1,26 +1,30 @@
+# semantico_kiara.py
+# Reglas semánticas de Kiara:
+# - While con condición booleana
+# - Métodos/funciones void no retornan valores
 
-from semantico_comun import (
-    add_error, function_stack, tipos_compatibles
-)
-
-# -------- WHILE --------
-def validar_while(cond, lineno):
-    cond_type = cond.get("type", "desconocido")
-
+def regla_while(cond_type: str):
+    """
+    Devuelve mensaje de error (str) si hay problema,
+    o None si está correcto.
+    """
     if cond_type != "bool":
-        add_error(
-            f"La condición del while debe ser 'bool', se encontró '{cond_type}'.",
-            lineno
+        return (
+            f"La condición del while debe ser de tipo 'bool', "
+            f"se encontró '{cond_type}'."
         )
+    return None
 
 
-# -------- RETURN EN VOID --------
-def validar_return_void(expr, lineno):
-    fun = function_stack[-1]
-    ret_type = fun["ret_type"]
-
-    if ret_type == "void" and expr is not None:
-        add_error(
-            f"El método '{fun['name']}' es void y no puede retornar valores.",
-            lineno
+def regla_return_void(ret_type: str, expr_type: str | None):
+    """
+    Para funciones/métodos void: no pueden retornar valor.
+    ret_type: tipo declarado de la función
+    expr_type: tipo de la expresión retornada
+    """
+    if ret_type == "void" and expr_type is not None and expr_type != "error":
+        return (
+            f"Un método/función de tipo 'void' no puede retornar un valor "
+            f"(se encontró expresión de tipo '{expr_type}')."
         )
+    return None
