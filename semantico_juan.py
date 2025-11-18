@@ -1,4 +1,4 @@
-
+#Aporte Juan Romero
 def regla_for(cond_type: str):
     """
     Regla: condición del for debe ser bool (si existe).
