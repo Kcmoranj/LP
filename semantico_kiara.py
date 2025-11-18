@@ -28,3 +28,4 @@ def regla_return_void(ret_type: str, expr_type: str | None):
             f"(se encontró expresión de tipo '{expr_type}')."
         )
     return None
+
