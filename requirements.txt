@@ -1,0 +1,10 @@
+# Requisitos Python para el Compilador C#
+# Proyecto de Lenguajes de Programación
+# Autores: Daniel Vilema, Kiara Morán, Juan Romero
+
+# Analizador léxico y sintáctico
+ply==3.11
+
+# Backend API
+flask==3.0.0
+flask-cors==4.0.0

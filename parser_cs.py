@@ -110,7 +110,15 @@ def p_expression_literal(p):
                   | KEYWORD_TRUE
                   | KEYWORD_FALSE
                   | KEYWORD_NULL"""
-    p[0] = ("literal", p[1])
+    value = p[1]
+    # Convertir literales a sus tipos apropiados
+    if p.slice[1].type == 'INT_LITERAL':
+        value = int(value)
+    elif p.slice[1].type == 'FLOAT_LITERAL':
+        value = float(value)
+    elif p.slice[1].type in ('KEYWORD_TRUE', 'KEYWORD_FALSE'):
+        value = value  # mantener como string 'true'/'false'
+    p[0] = ("literal", value)
 
 def p_expression_var(p):
     """expression : IDENTIFIER"""
@@ -166,37 +174,40 @@ def p_param_list(p):
     else:
         p[0] = [(p[1], p[2])]
 
+###############################################################
+# 2️⃣ SECCIÓN DE KIARA MORÁN
+# Responsabilidad:
+# - Estructura de control: WHILE
+# - I/O: Console.WriteLine / Console.ReadLine
+# - Tipo de función: Procedimientos (void)
+###############################################################
 
-# CLASES
-def p_class_def(p):
-    """class_def : KEYWORD_CLASS IDENTIFIER LBRACE class_body RBRACE
-                 | KEYWORD_CLASS IDENTIFIER LBRACE RBRACE"""
-    if len(p) == 6:
-        p[0] = ("class", p[2], p[4])
-    else:
-        p[0] = ("class", p[2], [])
+# WHILE
+def p_while_statement(p):
+    """while_statement : KEYWORD_WHILE LPAREN expression RPAREN block"""
+    p[0] = ("while", p[3], p[5])
 
-def p_class_body(p):
-    """class_body : class_body class_member
-                  | class_member"""
-    if len(p) == 3:
-        p[0] = p[1] + [p[2]]
-    else:
-        p[0] = [p[1]]
+# PRINT: Console.WriteLine(expr);
+def p_print_statement(p):
+    """print_statement : IDENTIFIER DOT IDENTIFIER LPAREN expression RPAREN SEMICOLON"""
+    if p[1] == "Console" and p[3] == "WriteLine":
+        p[0] = ("print", p[5])
 
-def p_class_member(p):
-    """class_member : declaration
-                    | method_def"""
-    p[0] = p[1]
+# INPUT: var = Console.ReadLine();
+def p_input_statement(p):
+    """input_statement : IDENTIFIER OPERATOR IDENTIFIER DOT IDENTIFIER LPAREN RPAREN SEMICOLON"""
+    if p[2] == '=' and p[3] == "Console" and p[5] == "ReadLine":
+        p[0] = ("input", p[1])
 
-# MÉTODOS DE CLASE
-def p_method_def(p):
-    """method_def : type IDENTIFIER LPAREN params RPAREN block"""
-    p[0] = ("method", p[1], p[2], p[4], p[6])
+# PROCEDIMIENTO (void function)
+def p_procedure_def(p):
+    """procedure_def : IDENTIFIER IDENTIFIER LPAREN params RPAREN block"""
+    if p[1] == "void":
+        p[0] = ("procedure_def", p[2], p[4], p[6])
 
 
 ###############################################################
-# SECCIÓN DE JUAN ROMERO
+# 3️⃣ SECCIÓN DE JUAN ROMERO
 # Responsabilidad:
 # - Estructura de control: FOR
 # - Estructura de datos: Clases
@@ -209,9 +220,16 @@ def p_for_statement(p):
     p[0] = ("for", p[3], p[4], p[6], p[8])
 
 def p_for_init(p):
-    """for_init : IDENTIFIER OPERATOR expression SEMICOLON"""
-    if p[2] == '=':
-        p[0] = ("assign", p[1], p[3])
+    """for_init : type IDENTIFIER OPERATOR expression SEMICOLON
+                | IDENTIFIER OPERATOR expression SEMICOLON"""
+    if len(p) == 6:
+        # Declaración con inicialización: int i = 0;
+        if p[3] == '=':
+            p[0] = ("declaration_init", p[1], p[2], p[4])
+    else:
+        # Asignación simple: i = 0;
+        if p[2] == '=':
+            p[0] = ("assign", p[1], p[3])
 
 def p_for_update(p):
     """for_update : IDENTIFIER OPERATOR expression"""
@@ -279,6 +297,20 @@ parser = yacc.yacc()
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
+        
+        # Extraer nombre de usuario de git desde el archivo (si tiene formato estándar)
+        import os
+        base_name = os.path.basename(file_path)
+        # Intentar extraer usuario: algoritmo_sintactico_<usuario>.cs o algoritmo_<usuario>.cs
+        if "daniel" in base_name.lower():
+            user_git = "DanieljVilema"
+        elif "kiara" in base_name.lower():
+            user_git = "Kcmoranj"
+        elif "juan" in base_name.lower():
+            user_git = "jcarrome"
+        else:
+            user_git = "usuario"
+        
         try:
             with open(file_path, 'r') as f:
                 data = f.read()
@@ -287,6 +319,15 @@ if __name__ == '__main__':
             print("--- ANÁLISIS SINTÁCTICO EXITOSO ---")
             if result:
                 print(result)
+                # Ejecutar análisis semántico
+                print("\n--- INICIANDO ANÁLISIS SEMÁNTICO ---")
+                errores = analizar_programa(result, user_git)
+                if errores:
+                    print(f"Se encontraron {len(errores)} errores semánticos.")
+                    for error in errores:
+                        print(f"  - {error}")
+                else:
+                    print("Análisis semántico: sin errores.")
             
         except FileNotFoundError:
             sys.stderr.write(f"Error: Archivo '{file_path}' no encontrado.\n")

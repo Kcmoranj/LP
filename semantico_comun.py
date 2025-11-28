@@ -49,6 +49,21 @@ def lookup_symbol(name):
     return symbol_table.get(name)
 
 
+def map_type_token_to_type(token_type):
+    """
+    Convierte tokens de tipo (KEYWORD_TYPE_*) a nombres de tipo internos.
+    """
+    mapping = {
+        "int": "int",
+        "double": "double",
+        "bool": "bool",
+        "char": "char",
+        "string": "string",
+        "void": "void"
+    }
+    return mapping.get(token_type, token_type)
+
+
 def tipos_compatibles(expected, actual):
     if expected == actual:
         return True
@@ -247,7 +262,15 @@ def analizar_statement(node):
         ret_type = map_type_token_to_type(tipo)
         declare_symbol(nombre, ret_type, "func", extra={"params": params})
         function_stack.append({"name": nombre, "ret_type": ret_type, "kind": "func", "has_return": False})
-        # parámetros no se declaran a fondo para simplificar
+        
+        # Declarar parámetros en la tabla de símbolos
+        if params and isinstance(params, list):
+            for param in params:
+                if isinstance(param, tuple) and len(param) >= 2:
+                    param_type = map_type_token_to_type(param[0])
+                    param_name = param[1]
+                    declare_symbol(param_name, param_type, "var")
+        
         analizar_block(block)
         info = function_stack.pop()
         # Regla de Daniel: funciones no void deben retornar algo
@@ -255,12 +278,40 @@ def analizar_statement(node):
         if msg:
             add_error(msg)
 
+    # Procedimientos void: ("procedure_def", name, params, block)
+    elif tag == "procedure_def":
+        _, nombre, params, block = node
+        ret_type = "void"
+        declare_symbol(nombre, ret_type, "func", extra={"params": params})
+        function_stack.append({"name": nombre, "ret_type": ret_type, "kind": "func", "has_return": False})
+        
+        # Declarar parámetros en la tabla de símbolos
+        if params and isinstance(params, list):
+            for param in params:
+                if isinstance(param, tuple) and len(param) >= 2:
+                    param_type = map_type_token_to_type(param[0])
+                    param_name = param[1]
+                    declare_symbol(param_name, param_type, "var")
+        
+        analizar_block(block)
+        info = function_stack.pop()
+        # Los procedimientos void no necesitan return obligatorio
+
     # Métodos: ("method", type, name, params, block)
     elif tag == "method":
         _, tipo, nombre, params, block = node
         ret_type = map_type_token_to_type(tipo)
         declare_symbol(nombre, ret_type, "method", extra={"params": params})
         function_stack.append({"name": nombre, "ret_type": ret_type, "kind": "method", "has_return": False})
+        
+        # Declarar parámetros en la tabla de símbolos
+        if params and isinstance(params, list):
+            for param in params:
+                if isinstance(param, tuple) and len(param) >= 2:
+                    param_type = map_type_token_to_type(param[0])
+                    param_name = param[1]
+                    declare_symbol(param_name, param_type, "var")
+        
         analizar_block(block)
         info = function_stack.pop()
         # Regla de Juan (retorno correcto) + Daniel (retorno obligatorio si no es void)
@@ -290,8 +341,37 @@ def analizar_statement(node):
     elif tag == "class":
         _, nombre, members = node
         declare_symbol(nombre, nombre, "class")
+        
+        # Regla de Juan: verificar miembros duplicados
+        nombres_miembros = []
+        for m in members:
+            if isinstance(m, tuple):
+                if m[0] == "declaration" and len(m) >= 3:
+                    nombres_miembros.append(m[2])  # nombre de la propiedad
+                elif m[0] == "declaration_init" and len(m) >= 3:
+                    nombres_miembros.append(m[2])  # nombre de la propiedad
+                elif m[0] in ("method", "function_def") and len(m) >= 3:
+                    nombres_miembros.append(m[2])  # nombre del método
+        
+        msg = semantico_juan.regla_clase_miembros_duplicados(nombre, nombres_miembros)
+        if msg:
+            add_error(msg)
+        
         for m in members:
             analizar_statement(m)
+
+    # PRINT: ("print", expr) - Console.WriteLine
+    elif tag == "print":
+        _, expr = node
+        # Verificar que la expresión sea válida
+        analizar_expresion(expr)
+
+    # INPUT: ("input", ident) - Console.ReadLine
+    elif tag == "input":
+        _, nombre = node
+        sym = lookup_symbol(nombre)
+        if sym is None:
+            add_error(f"Asignación de entrada a variable no declarada: '{nombre}'.")
 
     # Bloque: ("block", [statements])
     elif tag == "block":
